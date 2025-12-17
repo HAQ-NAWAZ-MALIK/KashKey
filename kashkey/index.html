@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kashmiri Keyboard Pro - کٲشُر کیٖ بورڈ</title>
+    <script src="practice_data/sentences.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Nastaliq+Urdu:wght@400;500;600;700&display=swap');
+
+        :root {
+            /* Premium Glassmorphism Theme */
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --bg-animated: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+
+            /* Glass Colors */
+            --glass-surface: rgba(255, 255, 255, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.2);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            --glass-highlight: rgba(255, 255, 255, 0.3);
+
+            /* Text Colors */
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.8);
+            --text-muted: rgba(255, 255, 255, 0.6);
+
+            /* Accents */
+            --accent-color: #00f2fe;
+            --accent-glow: 0 0 20px rgba(0, 242, 254, 0.5);
+            --error-color: #ff6b6b;
+            --success-color: #2ecc71;
+        }
+
+        [data-theme="dark"] {
+            --bg-gradient: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
+            --glass-surface: rgba(0, 0, 0, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-gradient);
+            background-size: 400% 400%;
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            animation: gradientBG 15s ease infinite;
+        }
+
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .app-container {
+            width: 100%;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            gap: 20px;
+            max-width: 1600px;
+            /* Wider layout */
+            margin: 0 auto;
+        }
+
+        /* Glassmorphism Utilities */
+        .glass-panel {
+            background: var(--glass-surface);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: var(--glass-shadow);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-panel:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: var(--glass-highlight);
+            transform: translateY(-2px);
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .brand {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .main-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, #fff, #e0e0e0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            letter-spacing: -1px;
+        }
+
+        .title-urdu {
+            font-family: 'Noto Nastaliq Urdu', serif;
+            font-size: 1.8rem;
+            color: var(--accent-color);
+            margin-top: -5px;
+            text-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 12px;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .control-btn:hover {
+            background: var(--accent-color);
+            color: #000;
+            box-shadow: var(--accent-glow);
+            border-color: transparent;
+        }
+
+        .control-btn.active {
+            background: var(--accent-color);
+            color: #000;
+        }
+
+        /* Main Content Grid */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+            flex: 1;
+        }
+
+        @media (min-width: 1024px) {
+            .main-content {
+                grid-template-columns: 2fr 1fr;
+                /* Keyboard area vs Practice/Stats area */
+            }
+        }
+
+        /* Text Area Section */
+        .text-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .display-area {
+            min-height: 250px;
+            height: 40vh;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            /* Changed from center to space-between */
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            /* Ensure children don't overflow the container visually */
+        }
+
+        .text-output {
+            font-family: 'Noto Nastaliq Urdu', serif;
+            font-size: 2.5rem;
+            line-height: 1.6;
+            text-align: center;
+            width: 100%;
+            color: #fff;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            outline: none;
+            word-break: break-word;
+            overflow-y: auto;
+            max-height: calc(100% - 60px);
+            /* Leave space for action bar */
+            margin-bottom: 20px;
+            /* Gap for action bar */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            /* Keep text at bottom if little text, or let it scroll */
+            min-height: 50px;
+        }
+
+        .placeholder {
+            position: absolute;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .action-bar {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            padding: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+            margin-top: auto;
+            /* Push to bottom */
+            background: rgba(255, 255, 255, 0.05);
+            /* Slight background to separate */
+            border-radius: 16px;
+        }
+
+        /* Keyboard Section */
+        .keyboard-container {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            user-select: none;
+        }
+
+        .keyboard-row {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .key {
+            position: relative;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            min-width: 50px;
+            height: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            flex: 1;
+            max-width: 80px;
+        }
+
+        .key:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+            border-color: var(--accent-color);
+        }
+
+        .key:active,
+        .key.active {
+            transform: scale(0.95);
+            background: var(--accent-color);
+            color: #000;
+            box-shadow: 0 0 15px var(--accent-color);
+        }
+
+        .key-english {
+            font-size: 0.7rem;
+            position: absolute;
+            top: 4px;
+            left: 6px;
+            opacity: 0.7;
+            font-weight: 600;
+        }
+
+        .key-main {
+            font-family: 'Noto Nastaliq Urdu', serif;
+            font-size: 1.4rem;
+            margin-top: 4px;
+        }
+
+        .key-modifier {
+            font-size: 0.8rem;
+            position: absolute;
+            bottom: 4px;
+            right: 6px;
+            color: var(--accent-color);
+            font-family: 'Noto Nastaliq Urdu', serif;
+        }
+
+        .key.active .key-modifier {
+            color: #000;
+        }
+
+        .spacebar {
+            flex: 5;
+            max-width: 400px;
+        }
+
+        /* Side Panel (Practice & Stats) */
+        .side-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .practice-card {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .practice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .practice-sentence {
+            font-family: 'Noto Nastaliq Urdu', serif;
+            font-size: 1.6rem;
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 16px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .practice-translation {
+            text-align: center;
+            color: var(--text-secondary);
+            font-style: italic;
+            font-size: 0.9rem;
+        }
+
+        .practice-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-color);
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        /* Notifications */
+        .notification {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 1000;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .notification.success {
+            border-left: 5px solid var(--success-color);
+        }
+
+        .notification.error {
+            border-left: 5px solid var(--error-color);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .header-controls {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .keyboard-row {
+                gap: 4px;
+            }
+
+            .key {
+                min-width: 32px;
+                height: 45px;
+                border-radius: 8px;
+            }
+
+            .key-main {
+                font-size: 1rem;
+            }
+
+            .key-english {
+                font-size: 0.5rem;
+            }
+
+            .key-modifier {
+                font-size: 0.6rem;
+            }
+
+            .spacebar {
+                max-width: none;
+            }
+
+            .main-content {
+                display: flex;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body data-theme="light">
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header glass-panel">
+            <div class="brand">
+                <h1 class="main-title">Kashmiri Keyboard Pro</h1>
+                <div class="title-urdu">کٲشُر کیٖ بورڈ</div>
+            </div>
+            <div class="header-controls">
+                <button class="control-btn" id="practiceBtn" onclick="togglePracticeMode()">
+                    <span>🎯 Practice</span>
+                </button>
+                <button class="control-btn" id="themeBtn" onclick="toggleTheme()">
+                    <span>🌓 Theme</span>
+                </button>
+                <button class="control-btn" id="soundBtn" onclick="toggleSound()">
+                    <span>🔊 Sound</span>
+                </button>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <!-- Left Column: Text Area & Keyboard -->
+            <div class="text-section">
+                <!-- Text Display -->
+                <div class="display-area glass-panel">
+                    <div class="text-output" id="textOutput"></div>
+                    <div class="placeholder" id="placeholder">Type something here...</div>
+                    <div class="action-bar">
+                        <button class="control-btn" onclick="clearText()">🗑️ Clear</button>
+                        <button class="control-btn" onclick="copyText()">📋 Copy</button>
+                        <button class="control-btn" onclick="speakText()">🔊 Speak</button>
+                    </div>
+                </div>
+
+                <!-- Keyboard -->
+                <div class="keyboard-container glass-panel" id="keyboardGrid">
+                    <!-- Generated via JS -->
+                </div>
+            </div>
+
+            <!-- Right Column: Practice & Stats -->
+            <div class="side-panel">
+                <!-- Practice Card (Hidden by default) -->
+                <div class="practice-card glass-panel" id="practiceCard" style="display: none;">
+                    <div class="practice-header">
+                        <h3>Practice Mode</h3>
+                        <span class="stat-label" id="difficultyLabel">Easy</span>
+                    </div>
+                    <div class="practice-sentence" id="targetSentence">
+                        Select 'Next' to start
+                    </div>
+                    <div class="practice-translation" id="targetTranslation">
+                        Translation will appear here
+                    </div>
+                    <div class="practice-controls">
+                        <button class="control-btn" onclick="prevSentence()">⬅️</button>
+                        <button class="control-btn" onclick="checkPractice()">✅ Check</button>
+                        <button class="control-btn" onclick="nextSentence()">➡️</button>
+                    </div>
+                    <div id="practiceFeedback" style="text-align: center; margin-top: 10px; min-height: 20px;"></div>
+                </div>
+
+                <!-- Stats -->
+                <div class="glass-panel" style="padding: 20px;">
+                    <h3 style="margin-bottom: 15px;">Typing Statistics</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-value" id="charCount">0</div>
+                            <div class="stat-label">Characters</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="wordCount">0</div>
+                            <div class="stat-label">Words</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="wpmCount">0</div>
+                            <div class="stat-label">WPM</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="accuracyCount">100%</div>
+                            <div class="stat-label">Accuracy</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Help -->
+                <div class="glass-panel" style="padding: 20px;">
+                    <h3 style="margin-bottom: 10px;">Quick Guide</h3>
+                    <ul style="list-style: none; font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6;">
+                        <li>• Use <strong>Shift</strong> or <strong>Alt</strong> for more characters</li>
+                        <li>• <strong>Practice Mode</strong> helps you learn sentences</li>
+                        <li>• Click <strong>Speak</strong> to hear pronunciation</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notificationArea"></div>
+
+    <script>
+        // --- Data & State ---
+        const kashCharMap = {
+            '`': { normal: '\u0060', modifier: '\uFDFA' }, '1': { normal: '\u06F1', modifier: '\u0610' },
+            '2': { normal: '\u06F2', modifier: '\u0613' }, '3': { normal: '\u06F3', modifier: '\u0614' },
+            '4': { normal: '\u06F4', modifier: '\u0603' }, '5': { normal: '\u06F5', modifier: '\u0612' },
+            '6': { normal: '\u06F6', modifier: '\u0611' }, '7': { normal: '\u06F7', modifier: '\u0652' },
+            '8': { normal: '\u06F8', modifier: '\u2018' }, '9': { normal: '\u06F9', modifier: '\u0028' },
+            '0': { normal: '\u0660', modifier: '\u0029' }, 'Q': { normal: '\u0642', modifier: '\u064D' },
+            'W': { normal: '\u066E\u06EA', modifier: '\u0621' }, 'E': { normal: '\u0639', modifier: '\u0670' },
+            'R': { normal: '\u0631', modifier: '\u0691' }, 'T': { normal: '\u062A', modifier: '\u0679' },
+            'Y': { normal: '\u06D2', modifier: '\u0651' }, 'U': { normal: '\u0656', modifier: '\u0657' },
+            'I': { normal: '\u06CC', modifier: '\u06CD' }, 'O': { normal: '\u06C1', modifier: '\u06BE' },
+            'P': { normal: '\u067E', modifier: '\u064F' }, '[': { normal: '\u0637', modifier: '\u2019' },
+            ']': { normal: '\u0638', modifier: '\u2018' }, 'A': { normal: '\u0627', modifier: '\u0622' },
+            'S': { normal: '\u0633', modifier: '\u0635' }, 'D': { normal: '\u062F', modifier: '\u0688' },
+            'F': { normal: '\u0641', modifier: '\u065A' }, 'G': { normal: '\u06AF', modifier: '\u063A' },
+            'H': { normal: '\u062D', modifier: '\u065B' }, 'J': { normal: '\u062C', modifier: '\u0636' },
+            'K': { normal: '\u06A9', modifier: '\u062E' }, 'L': { normal: '\u0644', modifier: '\u0631\u062D\u0645\u062A\u06C1\u0020\u0627\u0644\u0644\u06C1\u0020\u0639\u0644\u06CC\u06C1' },
+            'Z': { normal: '\u0632', modifier: '\u0630' }, 'X': { normal: '\u0634', modifier: '\u0698' },
+            'C': { normal: '\u0686', modifier: '\u062B' }, 'V': { normal: '\u0648', modifier: '\u06C4' },
+            'B': { normal: '\u0628', modifier: '\u064B' }, 'N': { normal: '\u0646', modifier: '\u06BA' },
+            'M': { normal: '\u0645', modifier: '\u0655' }, ',': { normal: '\u060C', modifier: '\u0650' },
+            '.': { normal: '\u06D4', modifier: '\u064E' }, '/': { normal: '\u0654', modifier: '\u061F' },
+            '-': { normal: '\u0672', modifier: '\u06ED' }
+        };
+
+        const keyLayout = [
+            ['`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
+            ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '[', ']'],
+            ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
+            ['Z', 'X', 'C', 'V', 'B', 'N', 'M', ',', '.', '/'],
+            ['-', 'SPACE']
+        ];
+
+        const physicalMap = {
+            '`': '`', '1': '1', '2': '2', '3': '3', '4': '4', '5': '5',
+            '6': '6', '7': '7', '8': '8', '9': '9', '0': '0',
+            '~': '`', '!': '1', '@': '2', '#': '3', '$': '4', '%': '5',
+            '^': '6', '&': '7', '*': '8', '(': '9', ')': '0',
+            ',': ',', '.': '.', '/': '/', '-': '-', '[': '[', ']': ']',
+            '<': ',', '>': '.', '?': '/', '_': '-', '{': '[', '}': ']',
+            ' ': 'SPACE'
+        };
+
+        let appState = {
+            textContent: '',
+            isShiftPressed: false,
+            isAltPressed: false,
+            startTime: null,
+            keystrokeCount: 0,
+            soundEnabled: true,
+            theme: 'light',
+            practiceMode: false,
+            currentSentenceIndex: 0
+        };
+
+        let audioCtx;
+        let keyTone;
+
+        // --- Audio System ---
+        function initAudio() {
+            try {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                keyTone = () => {
+                    if (!appState.soundEnabled || !audioCtx) return;
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+                    osc.type = 'sine';
+                    gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+                    osc.start(audioCtx.currentTime);
+                    osc.stop(audioCtx.currentTime + 0.1);
+                };
+            } catch (e) { console.warn('Audio init failed', e); }
+        }
+
+        function playKeySound() {
+            if (appState.soundEnabled && keyTone) keyTone();
+        }
+
+        // --- Keyboard Generation ---
+        function generateKeyboard() {
+            const container = document.getElementById('keyboardGrid');
+            container.innerHTML = '';
+            keyLayout.forEach(row => {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'keyboard-row';
+                row.forEach(keyId => {
+                    const keyEl = document.createElement('div');
+                    keyEl.className = keyId === 'SPACE' ? 'key spacebar' : 'key';
+                    keyEl.dataset.keyId = keyId;
+
+                    if (keyId === 'SPACE') {
+                        keyEl.innerHTML = '<div class="key-main">Space</div>';
+                    } else if (kashCharMap[keyId]) {
+                        const data = kashCharMap[keyId];
+                        keyEl.innerHTML = `
+                            <div class="key-english">${keyId}</div>
+                            <div class="key-main">${data.normal}</div>
+                            <div class="key-modifier">${data.modifier || ''}</div>
+                        `;
+                    }
+
+                    keyEl.addEventListener('mousedown', (e) => { e.preventDefault(); handleKeyClick(keyId); });
+                    keyEl.addEventListener('touchstart', (e) => { e.preventDefault(); handleKeyClick(keyId); });
+                    rowDiv.appendChild(keyEl);
+                });
+                container.appendChild(rowDiv);
+            });
+        }
+
+        // --- Core Logic ---
+        function handleKeyClick(keyId) {
+            playKeySound();
+            if (!appState.startTime) {
+                appState.startTime = Date.now();
+                startTimer();
+            }
+
+            appState.keystrokeCount++;
+            const keyEl = document.querySelector(`[data-key-id="${keyId}"]`);
+            if (keyEl) {
+                keyEl.classList.add('active');
+                setTimeout(() => keyEl.classList.remove('active'), 150);
+            }
+
+            if (keyId === 'SPACE') {
+                appState.textContent += ' ';
+            } else if (kashCharMap[keyId]) {
+                const data = kashCharMap[keyId];
+                const useMod = appState.isShiftPressed || appState.isAltPressed;
+                appState.textContent += (useMod && data.modifier) ? data.modifier : data.normal;
+            }
+
+            updateDisplay();
+            updateStats();
+        }
+
+        function updateDisplay() {
+            const output = document.getElementById('textOutput');
+            const placeholder = document.getElementById('placeholder');
+            output.textContent = appState.textContent;
+            placeholder.style.opacity = appState.textContent ? '0' : '1';
+
+            // Auto-scroll to bottom
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function updateStats() {
+            document.getElementById('charCount').textContent = appState.textContent.length;
+            const words = appState.textContent.trim().split(/\s+/).filter(w => w.length > 0);
+            document.getElementById('wordCount').textContent = words.length;
+
+            if (appState.startTime) {
+                const mins = (Date.now() - appState.startTime) / 60000;
+                const wpm = mins > 0 ? Math.round(words.length / mins) : 0;
+                document.getElementById('wpmCount').textContent = wpm;
+            }
+        }
+
+        function startTimer() {
+            const interval = setInterval(() => {
+                if (!appState.startTime) clearInterval(interval);
+                updateStats();
+            }, 1000);
+        }
+
+        // --- Actions ---
+        function clearText() {
+            appState.textContent = '';
+            appState.startTime = null;
+            appState.keystrokeCount = 0;
+            updateDisplay();
+            updateStats();
+        }
+
+        function copyText() {
+            if (!appState.textContent) return;
+            navigator.clipboard.writeText(appState.textContent)
+                .then(() => showNotification('Copied to clipboard!', 'success'))
+                .catch(() => showNotification('Failed to copy', 'error'));
+        }
+
+        function speakText() {
+            if (!appState.textContent) return;
+            const u = new SpeechSynthesisUtterance(appState.textContent);
+            u.lang = 'ur-PK'; // Closest available for most systems
+            speechSynthesis.speak(u);
+        }
+
+        function toggleTheme() {
+            appState.theme = appState.theme === 'light' ? 'dark' : 'light';
+            document.body.setAttribute('data-theme', appState.theme);
+        }
+
+        function toggleSound() {
+            appState.soundEnabled = !appState.soundEnabled;
+            document.getElementById('soundBtn').classList.toggle('active', appState.soundEnabled);
+            showNotification(`Sound ${appState.soundEnabled ? 'Enabled' : 'Disabled'}`, 'success');
+        }
+
+        // --- Practice Mode ---
+        function togglePracticeMode() {
+            appState.practiceMode = !appState.practiceMode;
+            const card = document.getElementById('practiceCard');
+            const btn = document.getElementById('practiceBtn');
+
+            if (appState.practiceMode) {
+                card.style.display = 'flex';
+                btn.classList.add('active');
+                loadSentence(0);
+                showNotification('Practice Mode Enabled', 'success');
+            } else {
+                card.style.display = 'none';
+                btn.classList.remove('active');
+            }
+        }
+
+        function loadSentence(index) {
+            if (typeof practiceSentences === 'undefined' || !practiceSentences.length) {
+                document.getElementById('targetSentence').textContent = "No sentences loaded.";
+                return;
+            }
+
+            if (index < 0) index = practiceSentences.length - 1;
+            if (index >= practiceSentences.length) index = 0;
+
+            appState.currentSentenceIndex = index;
+            const s = practiceSentences[index];
+
+            document.getElementById('targetSentence').textContent = s.text;
+            document.getElementById('targetTranslation').textContent = s.translation;
+            document.getElementById('difficultyLabel').textContent = s.difficulty;
+            document.getElementById('practiceFeedback').textContent = '';
+
+            // Clear text area for new practice
+            clearText();
+        }
+
+        function nextSentence() { loadSentence(appState.currentSentenceIndex + 1); }
+        function prevSentence() { loadSentence(appState.currentSentenceIndex - 1); }
+
+        function checkPractice() {
+            if (!appState.practiceMode) return;
+            const target = practiceSentences[appState.currentSentenceIndex].text;
+            const current = appState.textContent.trim();
+            const feedback = document.getElementById('practiceFeedback');
+
+            if (current === target) {
+                feedback.textContent = "✨ Perfect Match! Well done!";
+                feedback.style.color = "var(--success-color)";
+                showNotification("Correct!", "success");
+            } else {
+                feedback.textContent = "Keep trying! Check characters carefully.";
+                feedback.style.color = "var(--error-color)";
+            }
+        }
+
+        // --- Notification System ---
+        function showNotification(msg, type) {
+            const area = document.getElementById('notificationArea');
+            const notif = document.createElement('div');
+            notif.className = `notification ${type}`;
+            notif.innerHTML = `<span>${type === 'success' ? '✓' : '✕'}</span> ${msg}`;
+            area.appendChild(notif);
+
+            // Trigger animation
+            requestAnimationFrame(() => notif.classList.add('show'));
+
+            setTimeout(() => {
+                notif.classList.remove('show');
+                setTimeout(() => notif.remove(), 400);
+            }, 3000);
+        }
+
+        // --- Event Listeners ---
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Shift') { appState.isShiftPressed = true; return; }
+            if (e.key === 'Alt') { e.preventDefault(); appState.isAltPressed = true; return; }
+            if (e.key === 'Backspace') {
+                e.preventDefault();
+                appState.textContent = appState.textContent.slice(0, -1);
+                updateDisplay();
+                updateStats();
+                playKeySound();
+                return;
+            }
+
+            const key = physicalMap[e.key] || e.key.toUpperCase();
+            if (kashCharMap[key] || key === 'SPACE') {
+                e.preventDefault();
+                handleKeyClick(key);
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            if (e.key === 'Shift') appState.isShiftPressed = false;
+            if (e.key === 'Alt') appState.isAltPressed = false;
+        });
+
+        // Init
+        window.addEventListener('DOMContentLoaded', () => {
+            initAudio();
+            generateKeyboard();
+            document.addEventListener('click', () => {
+                if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+            }, { once: true });
+        });
+
+    </script>
+</body>
+
+</html>
